@@ -7,15 +7,18 @@ void setup() {
   Console.begin();
   FileSystem.begin();
 
-  while(!Console);  
-  Console.println("Filesystem datalogger\n");
+  //while(!Console);  
+  //Console.println("Filesystem datalogger\n");
 }
 
 void loop () {
-  int dataString;
-  dataString = i++;
+  String dataString;
+  dataString += getTimeStamp();
+  dataString += ",";
+  dataString += random(15, 30);
   
-  File dataFile = FileSystem.open("/mnt/sda1/datalog.txt", FILE_APPEND);
+  
+  File dataFile = FileSystem.open("/mnt/sda1/datalog.csv", FILE_APPEND);
 if (dataFile) {
     dataFile.println(dataString);
     dataFile.close();
@@ -24,5 +27,21 @@ if (dataFile) {
     Console.println("error opening datalog.txt");
   } 
   delay(15000);
+}
+
+String getTimeStamp() {
+  String result;
+  Process time;
+  time.begin("date");
+  time.addParameter("+%D-%T");  
+  time.run(); 
+
+  while(time.available()>0) {
+    char c = time.read();
+    if(c != '\n')
+      result += c;
+  }
+
+  return result;
 }
 
