@@ -18,9 +18,8 @@ body{
 
 }
 .centerimage{
-  width:540px; /* you can use % */
-  height: auto;
+  width: 540px; /* you can use % */
+  display: block;
   margin-left: auto;
   margin-right: auto;
-
 }

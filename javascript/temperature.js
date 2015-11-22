@@ -1,17 +1,19 @@
-alert("cla");
-file = readTextFile("../python/datalog.txt");
 
-var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function ()
-    {
-        if(rawFile.readyState === 4)
-        {
-            if(rawFile.status === 200 || rawFile.status == 0)
-            {
-                var allText = rawFile.responseText;
-                alert(allText);
-            }
-        }
-    }
-    rawFile.send(null);
+
+var nesne ;
+
+if(navigator.appName.search('Microsoft')>-1) { nesne = new ActiveXObject('MSXML2.XMLHTTP'); }
+else { nesne = new XMLHttpRequest(); }
+
+function yolla() {
+nesne.open('get', 'python/datalog.txt', true);
+nesne.onreadystatechange= cevap;
+nesne.send(null);
+}
+
+function cevap() {
+if(nesne.readyState==4) {
+var el = document.getElementById('Data');
+el.innerHTML = nesne.responseText;
+}
+}
