@@ -7,7 +7,7 @@
  <html>
    <head>
      <meta charset="utf-8">
-     <title>DomoClamod</title>
+     <title>DomoCla</title>
      <link rel="stylesheet" href="css/index.css">
    </head>
    <h1>
