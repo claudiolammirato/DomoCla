@@ -1,27 +1,38 @@
-var request ;
+//because read.csv is in utils
+ocpu.seturl("//public.opencpu.org/ocpu/library/utils/R")
 
-if(navigator.appName.search('Microsoft')>-1) { request = new ActiveXObject('MSXML2.XMLHTTP'); }
-else { request = new XMLHttpRequest(); }
+//actual handler
+$("#submitbutton").on("click", function(){
 
-
-request.open('get', 'python/datalog.txt', true);
-request.onreadystatechange= plotgraph;
-request.send(null);
-
-
-function plotgraph() {
-	if(request.readyState === 4) {
-	//var myArr = JSON.parse(request.responseText);
-	//var out = "";
-    //var i;
-    //for(i = 0; i < myArr.length; i++) {
-    //    out += myArr[i].display;
-    //}
-    var str = request.responseText.split("\n");
-    document.getElementById("Data").innerHTML = str[1];
+    //arguments
+    var myheader = $("#header").val() == "true";
+    var myfile = $("#csvfile")[0].files[0];
+        
+    if(!myfile){
+        alert("No file selected.");
+        return;
     }
-}
 
-$(function(){
-    $.jqplot('chartdiv', [[[1, 2],[3,5.12],[5,13.1],[7,33.6],[9,85.9],[11,219.9]]]);
-});
+    //disable the button during upload
+    $("#submitbutton").attr("disabled", "disabled");
+
+    //perform the request
+    var req = ocpu.call("read.csv", {
+        "file" : myfile,
+        "header" : myheader
+    }, function(session){
+        session.getConsole(function(outtxt){
+            $("#output").text(outtxt); 
+        });
+    });
+        
+    //if R returns an error, alert the error message
+    req.fail(function(){
+        alert("Server error: " + req.responseText);
+    });
+    
+    //after request complete, re-enable the button 
+    req.always(function(){
+        $("#submitbutton").removeAttr("disabled")
+    });        
+});    

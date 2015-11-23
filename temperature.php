@@ -4,22 +4,54 @@ exec("cd python;python importfile.py");
 ?>
 
 <!DOCTYPE html>
-<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+<!--pro-->
 <html>
-<title>Temperature</title>
 <head>
-<meta charset="utf-8">
-<script type="text/javascript" src="javascript/temperature.js?v=<?=filemtime('javascrip/temperature.js');?>"></script>
-<script language="javascript" type="text/javascript" src="javascript/jquery-2.1.4.min.js"></script>
-<script language="javascript" type="text/javascript" src="javascript/jquery.jqplot.min.js"></script>
-<link rel="stylesheet" type="text/css" href="css/jquery.jqplot.min.css" />
-<script>
-	
-</script>
+	<title>Import/export from/to CSV</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,Date of Publication");
+			myGrid.setInitWidths("50,150,100,80,80,80,80,200");
+			myGrid.setColAlign("right,left,left,right,center,left,center,center");
+			myGrid.setColTypes("dyn,ed,ed,price,ch,co,ra,ro");
+			myGrid.getCombo(5).put(2,2);
+			myGrid.init();
+			myGrid.enableCSVAutoID(false);
+			myGrid.load("../common/grid.csv","csv");
+		}
+		function serilaizeToCSVWithDelim(delim){
+			myGrid.setCSVDelimiter(delim);
+			document.getElementById('ser_1').value=myGrid.serializeToCSV();
+		}
+	</script>
 </head>
-<body>
-<!--<input type="button" value="Retrieve Data"  onclick="yolla()">-->
-
-<div id="Data"></div>
-<div id="chartdiv" style="height:400px;width:300px; "></div>
-</div>
+<body onload="doOnLoad()">
+	<h1>Import/export from/to CSV</h1>
+	<table width="800" cellspacing="0" cellpadding="0">
+		<tr>
+			<td valign="top">
+				<div id="gridbox" style="width:600px; height:270px; background-color:white;"></div>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top" width="400px">
+				<p>Serialization to CVS is possible in dhtmlxGrid. You can choose which delimiter to use.</p>
+				Use as delimiter:<br>
+				<li hrei><a href="javascript:void(0)" onClick="serilaizeToCSVWithDelim('\t')">Tab</a> - \t</li>
+				<li><a href="javascript:void(0)" onClick="serilaizeToCSVWithDelim(',')">Comma</a> - ,</li>
+				<li><a href="javascript:void(0)" onClick="serilaizeToCSVWithDelim(document.getElementById('serdelim').value)">Other</a> <input id="serdelim" size="1" maxlength="1"></li>
+				<p>Load from CSV</p>
+				<li><a href="javascript:void(0)" onClick="myGrid.clearAll();myGrid.parse(document.getElementById('ser_1').value, 'csv')">Load Grid from CSV (content of textarea below)</a></li>
+			</td>
+		</tr>
+	</table>
+	<textarea style="font-size:8pt; font-family:Arial; width:800px; height:150px;" id="ser_1"></textarea>
+</body>
+</html>
